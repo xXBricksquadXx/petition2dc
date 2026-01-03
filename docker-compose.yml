@@ -1,10 +1,26 @@
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     env_file:
       - .env
+    environment:
+      # These override .env if also present there
+      PORT: "3000"
+      DB_PATH: ./data/app.sqlite
+      BASE_URL: http://localhost:3000
+
+      # keep in compose so dev has sane defaults; override in .env for prod
+      SESSION_SECRET: ${SESSION_SECRET:-change-me-in-prod}
+      TRUST_PROXY: ${TRUST_PROXY:-false}
+
+      # admin defaults (prefer setting these in .env, but this keeps compose self-contained)
+      ADMIN_PASSWORD_HASH_HEX: ${ADMIN_PASSWORD_HASH_HEX:-}
+      ADMIN_PASSWORD_SALT_HEX: ${ADMIN_PASSWORD_SALT_HEX:-}
+
+    # IMPORTANT: do NOT bind-mount the whole repo to /app (it will pull Windows node_modules)
     volumes:
       - ./data:/app/data
-    restart: unless-stopped

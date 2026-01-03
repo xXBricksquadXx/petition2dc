@@ -1,17 +1,26 @@
-node_modules
-.env
-.env.local
+# deps
+/node_modules/
 
-# sqlite / local db
-data/*.sqlite
-data/*.sqlite-journal
-data/*.db
+# env
+.env
+.env.*
+!.env.example
+
+# sqlite / local db + sidecars
+/data/
+/data/**/*.sqlite
+/data/**/*.sqlite-*
+/data/**/*.db
+/data/**/*.db-*
+/data/**/*.wal
+/data/**/*.shm
 
 # local runtime scratch
-var/
+/var/
 .DS_Store
 
 legacy/
 **/smoke.html
 
+# generated dataset (optional keep out of git)
 src/data/officials.json
