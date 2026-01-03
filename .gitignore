@@ -1,0 +1,17 @@
+node_modules
+.env
+.env.local
+
+# sqlite / local db
+data/*.sqlite
+data/*.sqlite-journal
+data/*.db
+
+# local runtime scratch
+var/
+.DS_Store
+
+legacy/
+**/smoke.html
+
+src/data/officials.json
