@@ -8,10 +8,6 @@ import csurf from "csurf";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
-
-import sqlite3 from "sqlite3";
-import connectSqlite3 from "connect-sqlite3";
-
 import { config } from "./config.js";
 import { pagesRouter } from "./routes/pages.js";
 import { adminRouter } from "./routes/admin.js";
@@ -48,30 +44,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(cookieParser());
-
-// --- session store (SQLite) ---
-const SQLiteStore = connectSqlite3(session);
-
-// keep sessions in /app/data alongside your app.sqlite
-const sessionsPath =
-  process.env.SESSION_DB_PATH || path.join(__dirname, "..", "data", "sessions.sqlite");
-const sessionsDb = new sqlite3.Database(sessionsPath);
-
 app.use(
   session({
     name: "p2dc.sid",
     secret: config.sessionSecret,
     resave: false,
     saveUninitialized: false,
-    store: new SQLiteStore({
-      db: sessionsDb,
-      table: "sessions",
-      concurrentDB: true, // enables WAL mode in this store :contentReference[oaicite:2]{index=2}
-    }),
     cookie: {
       httpOnly: true,
       sameSite: "lax",
-      secure: false, // set true behind HTTPS + trust proxy
+      secure: false, // set true behind HTTPS
       maxAge: 1000 * 60 * 60 * 24 * 14, // 14 days
     },
   }),
@@ -117,6 +99,7 @@ app.use((err, req, res, next) => {
     });
     return;
   }
+  // fallthrough
   // eslint-disable-next-line no-console
   console.error(err);
   res.status(500).render("pages/not-found", { message: "Server error." });
