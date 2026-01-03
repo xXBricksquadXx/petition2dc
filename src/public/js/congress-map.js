@@ -1,4 +1,3 @@
-/* global L, fetch */
 (async function () {
   if (typeof L === "undefined") return;
   const states = window.P2DC_STATES || [];
