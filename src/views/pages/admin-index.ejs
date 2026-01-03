@@ -1,0 +1,39 @@
+<section class="mb-3 d-flex flex-wrap justify-content-between align-items-end gap-2">
+  <div>
+    <h1 class="h3 mb-1">Admin</h1>
+    <div class="text-muted">Update petition and delivery statuses.</div>
+  </div>
+</section>
+
+<div class="table-responsive">
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th>Created</th>
+        <th>Title</th>
+        <th>Issue</th>
+        <th>Status</th>
+        <th>Targets</th>
+        <th>Signatures</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% petitions.forEach((p) => { %>
+        <tr>
+          <td class="text-muted"><%= new Date(p.created_at).toLocaleDateString() %></td>
+          <td><a href="/admin/p/<%= p.id %>"><%= p.title %></a></td>
+          <td><span class="badge text-bg-info"><%= p.issue_label %></span></td>
+          <td><span class="badge status-badge status-<%= p.status %>"><%= p.status %></span></td>
+          <td>
+            <% p.targets.forEach((t) => { %>
+              <span class="badge text-bg-light border"><%= t.replace('_',' ') %></span>
+            <% }) %>
+          </td>
+          <td><%= p.signature_count %></td>
+          <td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="/p/<%= p.slug %>">View public</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

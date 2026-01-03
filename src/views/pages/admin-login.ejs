@@ -1,0 +1,25 @@
+<section class="mb-3">
+  <h1 class="h3 mb-1">Admin login</h1>
+  <div class="text-muted">Status updates are admin-managed.</div>
+</section>
+
+<% if (!isConfigured) { %>
+  <div class="alert alert-warning">
+    Admin password is not configured. Set <code>ADMIN_PASSWORD_SALT_HEX</code> and
+    <code>ADMIN_PASSWORD_HASH_HEX</code> in <code>.env</code>.
+    Generate via <code>node scripts/hash-password.mjs "your password"</code>.
+  </div>
+<% } %>
+
+<form method="post" action="/admin/login" class="card" style="max-width: 520px;">
+  <div class="card-body">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <label class="form-label">Password</label>
+    <input class="form-control" name="password" type="password" autocomplete="current-password" required />
+
+    <button class="btn btn-primary mt-3" type="submit" <%= !isConfigured ? 'disabled' : '' %>>
+      Login
+    </button>
+  </div>
+</form>

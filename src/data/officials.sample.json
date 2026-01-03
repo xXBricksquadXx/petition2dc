@@ -1,0 +1,22 @@
+{
+  "TN": [
+    {
+      "name": "Example Senator",
+      "chamber": "Senate",
+      "party": "N/A",
+      "website": "https://www.senate.gov",
+      "contact": "https://www.senate.gov/senators/senators-contact.htm",
+      "phone": "",
+      "dc_office": "United States Senate, Washington, DC 20510"
+    },
+    {
+      "name": "Example Representative (TN-01)",
+      "chamber": "House",
+      "party": "N/A",
+      "website": "https://www.house.gov",
+      "contact": "https://www.house.gov/representatives/find-your-representative",
+      "phone": "",
+      "dc_office": "U.S. House of Representatives, Washington, DC 20515"
+    }
+  ]
+}

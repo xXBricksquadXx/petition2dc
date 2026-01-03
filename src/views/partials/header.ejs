@@ -1,0 +1,63 @@
+<header class="container my-3">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <a href="/" class="text-decoration-none">
+      <div class="brand">
+        <div class="brand-mark">P2DC</div>
+        <div>
+          <div class="brand-name">Petition2DC</div>
+          <div class="brand-sub">a simple petitions + directory tool</div>
+        </div>
+      </div>
+    </a>
+
+    <div class="d-flex align-items-center gap-3">
+      <a href="/petitions/new" class="btn btn-primary">Create a Petition</a>
+
+      <% if (isAdmin) { %>
+        <form method="post" action="/admin/logout" class="m-0">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button class="btn btn-outline-secondary btn-sm" type="submit">Logout</button>
+        </form>
+      <% } else { %>
+        <a href="/admin/login" class="link-secondary">Admin</a>
+      <% } %>
+    </div>
+  </div>
+
+  <hr class="my-3" />
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-3 px-2">
+    <div class="container-fluid">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbars"
+        aria-controls="navbars"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbars">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath === '/' ? 'active' : '' %>" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath.startsWith('/congress') ? 'active' : '' %>" href="/congress">Congressional Directory</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= currentPath.startsWith('/petitions/new') ? 'active' : '' %>" href="/petitions/new">Create Petition</a>
+          </li>
+        </ul>
+
+        <form class="d-flex" role="search" method="get" action="/">
+          <input class="form-control me-2" type="search" placeholder="Search petitions" name="q" />
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+</header>

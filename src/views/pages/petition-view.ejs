@@ -1,0 +1,134 @@
+<section class="mb-3">
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <h1 class="h3 mb-0"><%= petition.title %></h1>
+    <span class="badge text-bg-info"><%= petition.issue_label %></span>
+    <span class="badge status-badge status-<%= petition.status %>"><%= petition.status %></span>
+  </div>
+  <div class="text-muted small mt-1">
+    Created <%= new Date(petition.created_at).toLocaleString() %> •
+    <strong><%= petition.signature_count %></strong> signatures
+  </div>
+</section>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="text-muted small">Petition text</div>
+        <pre class="petition-body"><%= petition.body %></pre>
+
+        <div class="mt-3">
+          <div class="text-muted small">Targets</div>
+          <div class="d-flex flex-wrap gap-2 mt-1">
+            <% petition.targets.forEach((t) => { %>
+              <span class="badge text-bg-light border"><%= t.replace('_', ' ') %></span>
+            <% }) %>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="text-muted small">Delivery tracking (admin-managed)</div>
+          <div class="table-responsive mt-2">
+            <table class="table table-sm align-middle">
+              <thead>
+                <tr>
+                  <th>Target</th>
+                  <th>Status</th>
+                  <th class="w-50">Note</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% deliveries.forEach((d) => { %>
+                  <tr>
+                    <td><%= d.target.replace('_', ' ') %></td>
+                    <td><span class="badge text-bg-secondary"><%= d.status %></span></td>
+                    <td class="text-muted"><%= d.note || "" %></td>
+                    <td class="text-muted"><%= new Date(d.updated_at).toLocaleString() %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <div class="text-muted small">Share</div>
+          <input class="form-control" value="<%= (typeof baseUrl !== 'undefined' ? baseUrl : '') + '/p/' + petition.slug %>" readonly />
+          <div class="small text-muted mt-1">Copy this link and share it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4" id="sign">
+      <div class="card-body">
+        <h2 class="h5 mb-2">Sign this petition</h2>
+        <div class="text-muted small mb-3">
+          Email is hashed for dedupe and not shown publicly.
+        </div>
+
+        <form method="post" action="/p/<%= petition.slug %>/sign" class="row g-3">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+          <div class="col-md-4">
+            <label class="form-label">First name</label>
+            <input class="form-control <%= errors.first_name ? 'is-invalid' : '' %>" name="first_name" value="<%= values.first_name %>" required />
+            <% if (errors.first_name) { %><div class="invalid-feedback"><%= errors.first_name %></div><% } %>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Last name</label>
+            <input class="form-control <%= errors.last_name ? 'is-invalid' : '' %>" name="last_name" value="<%= values.last_name %>" required />
+            <% if (errors.last_name) { %><div class="invalid-feedback"><%= errors.last_name %></div><% } %>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Email</label>
+            <input class="form-control <%= errors.email ? 'is-invalid' : '' %>" name="email" value="<%= values.email %>" placeholder="email@example.com" required />
+            <% if (errors.email) { %><div class="invalid-feedback"><%= errors.email %></div><% } %>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Zipcode (optional)</label>
+            <input class="form-control <%= errors.zipcode ? 'is-invalid' : '' %>" name="zipcode" value="<%= values.zipcode %>" placeholder="37201" />
+            <% if (errors.zipcode) { %><div class="invalid-feedback"><%= errors.zipcode %></div><% } %>
+          </div>
+
+          <!-- Honeypot -->
+          <div class="visually-hidden">
+            <label>Last</label>
+            <input type="text" name="last" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <div class="col-12">
+            <button class="btn btn-success" type="submit">Sign</button>
+            <a class="btn btn-outline-secondary ms-2" href="/">Back</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h5">Status meanings</h2>
+        <ul class="small text-muted mb-0">
+          <li><strong>RECEIVED</strong>: petition submitted and public.</li>
+          <li><strong>IN_REVIEW</strong>: being reviewed/organized.</li>
+          <li><strong>DELIVERED</strong>: delivery attempt completed (admin sets per-target).</li>
+          <li><strong>RESPONDED</strong>: an office response was received.</li>
+          <li><strong>CLOSED</strong>: no longer collecting signatures.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-body">
+        <h2 class="h5">Next build</h2>
+        <div class="small text-muted">
+          Hook delivery to a real workflow:
+          mailer integration, PDFs, or a “receipt ID” that staff can reply with.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

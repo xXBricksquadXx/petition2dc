@@ -1,0 +1,77 @@
+<section class="mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+      <h1 class="h3 mb-1">Petitions</h1>
+      <div class="text-muted">Create, share, collect signatures, and track delivery status.</div>
+    </div>
+    <div>
+      <a href="/petitions/new" class="btn btn-primary">Create a Petition</a>
+    </div>
+  </div>
+</section>
+
+<% if (q) { %>
+  <div class="mb-3">
+    <span class="badge text-bg-secondary">Search: <%= q %></span>
+    <a class="ms-2 link-secondary" href="/">Clear</a>
+  </div>
+<% } %>
+
+<% if (petitions.length === 0) { %>
+  <div class="alert alert-light border">
+    No petitions yet.
+    <a href="/petitions/new">Create the first one</a>.
+  </div>
+<% } %>
+
+<div class="row g-3">
+  <% petitions.forEach((p) => { %>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex flex-wrap justify-content-between gap-2">
+            <div>
+              <div class="d-flex flex-wrap align-items-center gap-2">
+                <a class="h5 mb-0 text-decoration-none" href="/p/<%= p.slug %>"><%= p.title %></a>
+                <span class="badge text-bg-info"><%= p.issue_label %></span>
+                <span class="badge status-badge status-<%= p.status %>"><%= p.status %></span>
+              </div>
+              <div class="text-muted small mt-1">
+                Created <%= new Date(p.created_at).toLocaleString() %>
+              </div>
+            </div>
+            <div class="text-end">
+              <div class="h6 mb-0"><%= p.signature_count %> signatures</div>
+              <div class="small text-muted">Targets:
+                <% p.targets.forEach((t, idx) => { %>
+                  <span class="badge text-bg-light border"><%= t.replace('_', ' ') %></span>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <div class="text-muted small">Preview</div>
+            <div class="petition-preview"><%= p.body.slice(0, 220) %><%= p.body.length > 220 ? "…" : "" %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<nav class="mt-4" aria-label="pagination">
+  <ul class="pagination">
+    <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+      <a class="page-link" href="/?<%= q ? 'q=' + encodeURIComponent(q) + '&' : '' %>page=<%= page - 1 %>">Prev</a>
+    </li>
+
+    <li class="page-item disabled">
+      <span class="page-link">Page <%= page %> / <%= totalPages %></span>
+    </li>
+
+    <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+      <a class="page-link" href="/?<%= q ? 'q=' + encodeURIComponent(q) + '&' : '' %>page=<%= page + 1 %>">Next</a>
+    </li>
+  </ul>
+</nav>
