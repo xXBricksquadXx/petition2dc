@@ -24,3 +24,19 @@ legacy/
 
 # generated dataset (optional keep out of git)
 src/data/officials.json
+
+# env/secrets
+.env.prod
+.env
+*.pem
+*.key
+
+# db / runtime data
+data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+sessions.sqlite
+
+# backups
+p2dc_data-backup-*.tgz

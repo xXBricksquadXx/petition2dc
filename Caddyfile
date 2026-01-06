@@ -1,0 +1,3 @@
+p2dc.duckdns.org {
+  reverse_proxy web:3000
+}
