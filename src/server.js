@@ -19,6 +19,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+/**
+ * Behind Caddy (reverse proxy) you want:
+ * - TRUST_PROXY=true so req.ip is correct and secure cookies work
+ */
 if (config.trustProxy) {
   app.set("trust proxy", 1);
 }
@@ -32,18 +36,27 @@ app.set("layout", "layout");
 // logging
 app.use(morgan("tiny"));
 
-// security headers (CSP off because we use CDN assets in templates)
+// security headers (CSP off because templates use CDN assets)
 app.use(
   helmet({
     contentSecurityPolicy: false,
   }),
 );
 
+// static assets: src/public -> /
 app.use(express.static(path.join(__dirname, "public")));
+
+// parsers
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(cookieParser());
+
+/**
+ * Session cookies:
+ * - secure should be true when behind HTTPS (Caddy)
+ * - but if trustProxy is false, secure cookies won't set on http://localhost
+ */
 app.use(
   session({
     name: "p2dc.sid",
@@ -53,7 +66,7 @@ app.use(
     cookie: {
       httpOnly: true,
       sameSite: "lax",
-      secure: false, // set true behind HTTPS
+      secure: config.trustProxy, // IMPORTANT: true in prod behind Caddy HTTPS
       maxAge: 1000 * 60 * 60 * 24 * 14, // 14 days
     },
   }),
@@ -90,7 +103,7 @@ app.use(apiRouter);
 app.use(adminRouter);
 app.use(pagesRouter);
 
-// CSRF errors
+// CSRF errors + generic error handler
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   if (err && err.code === "EBADCSRFTOKEN") {
@@ -99,7 +112,7 @@ app.use((err, req, res, next) => {
     });
     return;
   }
-  // fallthrough
+
   // eslint-disable-next-line no-console
   console.error(err);
   res.status(500).render("pages/not-found", { message: "Server error." });
