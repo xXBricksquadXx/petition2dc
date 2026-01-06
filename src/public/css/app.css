@@ -8,16 +8,16 @@
   gap: 10px;
 }
 .brand-mark {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--brand);
-  color: white;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
+
+.brand-mark img {
+  display: block;
+}
+
 .brand-name {
   font-weight: 700;
   color: #111;
